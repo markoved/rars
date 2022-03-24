@@ -6,10 +6,10 @@ import rars.riscv.BasicInstructionFormat;
 import rars.riscv.InstructionSet;
 import rars.riscv.hardware.RegisterFile;
 
-public class CLZ extends CLZInstruction{
+public class CTZ extends CTZInstruction{
 
-    public CLZ() {
-        super("clz t1,t2", "Count leading zero bits : counts leading zero bits of t2 and stores the value in t1",
+    public CTZ() {
+        super("ctz t1,t2", "Count trailing zero bits: counts trailing zero bits of t2 and stores the value in t1",
                 "001");
 
     }
@@ -17,25 +17,28 @@ public class CLZ extends CLZInstruction{
     @Override
     protected long compute(long value, long immediate) {
         String valueString = Long.toBinaryString(value);
-        int digitCount = valueString.length();
-        if (value == 0) return 32;
-        return 32 - digitCount;
+        int count = 0;
+        for (int i = 0; i < 32; i++) {
+            if (valueString.charAt(i) == '1') break;
+            count++;
+        }
+        return count;
     }
 
     public static void main(String[] args) {
-        CLZ clz = new CLZ();
-        System.out.println(clz.compute(9, 234));
+        CTZ ctz = new CTZ();
+        System.out.println(ctz.compute(9, 234));
     }
 }
 
-abstract class CLZInstruction extends BasicInstruction {
-    public CLZInstruction(String usage, String description, String funct) {
+abstract class CTZInstruction extends BasicInstruction {
+    public CTZInstruction(String usage, String description, String funct) {
         super(usage, description, BasicInstructionFormat.I_FORMAT,
-                "011000000000 sssss " + funct + " fffff 0010011");
+                "011000000001 sssss " + funct + " fffff 0010011");
     }
-    public CLZInstruction(String usage, String description, String funct, boolean rv64) {
+    public CTZInstruction(String usage, String description, String funct, boolean rv64) {
         super(usage, description, BasicInstructionFormat.I_FORMAT,
-                "011000000000 sssss " + funct + " fffff 0010011",rv64);
+                "011000000001 sssss " + funct + " fffff 0010011",rv64);
     }
 
     public void simulate(ProgramStatement statement) {
