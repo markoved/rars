@@ -4,7 +4,7 @@ public class CPOP extends ImmediateEncodedInstruction{
 
     public CPOP() {
         super("cpop t1,t2", "Counts number of 1's (i.e., set bits) in t2 and stores the value in t1",
-                "011000000000", "001");
+                "011000000010", "001");
     }
 
     @Override
